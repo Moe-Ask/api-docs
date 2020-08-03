@@ -1,0 +1,129 @@
+#![allow(missing_docs, trivial_casts, unused_variables, unused_mut, unused_imports, unused_extern_crates, non_camel_case_types)]
+
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
+#[macro_use]
+extern crate serde_derive;
+
+#[cfg(any(feature = "client", feature = "server"))]
+#[macro_use]
+extern crate hyper;
+#[cfg(any(feature = "client", feature = "server"))]
+#[macro_use]
+extern crate url;
+
+// Crates for conversion support
+#[cfg(feature = "conversion")]
+#[macro_use]
+extern crate frunk_derives;
+#[cfg(feature = "conversion")]
+#[macro_use]
+extern crate frunk_enum_derive;
+#[cfg(feature = "conversion")]
+extern crate frunk_core;
+
+extern crate mime;
+extern crate serde;
+extern crate serde_json;
+
+extern crate futures;
+extern crate chrono;
+extern crate swagger;
+
+use futures::Stream;
+use std::io::Error;
+
+#[allow(unused_imports)]
+use std::collections::HashMap;
+
+#[cfg(any(feature = "client", feature = "server"))]
+mod mimetypes;
+
+#[deprecated(note = "Import swagger-rs directly")]
+pub use swagger::{ApiError, ContextWrapper};
+#[deprecated(note = "Import futures directly")]
+pub use futures::Future;
+
+pub const BASE_PATH: &'static str = "/v1";
+pub const API_VERSION: &'static str = "1.0.0";
+
+
+#[derive(Debug, PartialEq)]
+pub enum UserGetResponse {
+    /// OK
+    OK
+}
+
+#[derive(Debug, PartialEq)]
+pub enum UserLoginPostResponse {
+    /// 
+    
+    (serde_json::Value)
+}
+
+
+/// API
+pub trait Api<C> {
+
+    /// 获取用户信息
+    fn user_get(&self, context: &C) -> Box<dyn Future<Item=UserGetResponse, Error=ApiError>>;
+
+
+    fn user_login_post(&self, context: &C) -> Box<dyn Future<Item=UserLoginPostResponse, Error=ApiError>>;
+
+}
+
+/// API without a `Context`
+pub trait ApiNoContext {
+
+    /// 获取用户信息
+    fn user_get(&self) -> Box<dyn Future<Item=UserGetResponse, Error=ApiError>>;
+
+
+    fn user_login_post(&self) -> Box<dyn Future<Item=UserLoginPostResponse, Error=ApiError>>;
+
+}
+
+/// Trait to extend an API to make it easy to bind it to a context.
+pub trait ContextWrapperExt<'a, C> where Self: Sized {
+    /// Binds this API to a context.
+    fn with_context(self: &'a Self, context: C) -> ContextWrapper<'a, Self, C>;
+}
+
+impl<'a, T: Api<C> + Sized, C> ContextWrapperExt<'a, C> for T {
+    fn with_context(self: &'a T, context: C) -> ContextWrapper<'a, T, C> {
+         ContextWrapper::<T, C>::new(self, context)
+    }
+}
+
+impl<'a, T: Api<C>, C> ApiNoContext for ContextWrapper<'a, T, C> {
+
+    /// 获取用户信息
+    fn user_get(&self) -> Box<dyn Future<Item=UserGetResponse, Error=ApiError>> {
+        self.api().user_get(&self.context())
+    }
+
+
+    fn user_login_post(&self) -> Box<dyn Future<Item=UserLoginPostResponse, Error=ApiError>> {
+        self.api().user_login_post(&self.context())
+    }
+
+}
+
+#[cfg(feature = "client")]
+pub mod client;
+
+// Re-export Client as a top-level name
+#[cfg(feature = "client")]
+pub use self::client::Client;
+
+#[cfg(feature = "server")]
+pub mod server;
+
+// Re-export router() as a top-level name
+#[cfg(feature = "server")]
+pub use self::server::Service;
+
+pub mod models;
