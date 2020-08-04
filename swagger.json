@@ -1,0 +1,214 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Moe Ask Api",
+        "description": "MoeAsk的api文档",
+        "version": "1.0.0",
+        "termsOfService": "https://moeask.com/terms/",
+        "contact": {
+            "email": "support@moeask.com"
+        },
+        "license": {
+            "name": "AGPL 3.0",
+            "url": "https://www.gnu.org/licenses/agpl-3.0.html"
+        }
+    },
+
+    "servers": [
+        {
+            "url": "https://api.moeask.com/{version}",
+            "description": "主要api服务器",
+            "variables": {
+                "version": {
+                    "enum": [
+                        "v1"
+                    ],
+                    "default": "v1"
+                }
+            }
+        }
+    ],
+
+    "tags": [
+        {
+            "name": "user",
+            "description": "用户相关操作"
+        }
+    ],
+
+    "paths": {
+        "/user/{user_id}": {
+            "get": {
+                "tags": ["user"],
+                "summary": "获取用户信息",
+                "description": "",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "身份验证不通过或没有身份验证"
+                    },
+                    "404": {
+                        "description": "找不到用户"
+                    }
+                },
+                "security": [
+                    {
+                        "TokenAuth": [],
+                        "OAuth": [
+                            "read:user"
+                        ]
+                    }
+                ]
+            }
+        },
+
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "登录",
+                "operationId": "userLogin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "登录成功。返回token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "token"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "登录失败，没有这个用户或密码有误"
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "description": "昵称"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "permissions": {
+                        "type": "string",
+                        "enum": [
+                            "Admin",
+                            "User"
+                        ]
+                    },
+                    "create_time": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "账号创建时间"
+                    },
+                    "last_time": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "用户上次登录时间"
+                    },
+                    "ip": {
+                        "type": "string",
+                        "description": "用户上次登录ip"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "自我描述"
+                    },
+                    "avatar_url": {
+                        "type": "string",
+                        "description": "头像地址(path部分)"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "TokenAuth": {
+                "type": "apiKey",
+                "name": "Auth-Token",
+                "in": "header",
+                "description": "用于验证用户身份的token。通过登录获得。"
+            },
+            "OAuth": {
+                "type": "oauth2",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "/oauth/dialog",
+                        "tokenUrl": "/oauth/token",
+                        "scopes": {
+                            "read:user": "获取用户信息"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
