@@ -1,0 +1,36 @@
+{
+	"get": {
+		"tags": [
+			"question"
+		],
+		"summary": "获取问题详情",
+		"operationId": "getQuestion",
+		"parameters": [
+			{
+				"name": "id",
+				"in": "path",
+				"required": true,
+				"schema": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"description": "问题id"
+			}
+		],
+		"responses": {
+			"200": {
+				"description": "请求成功",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "../models/question.json#/components/schemas/Question"
+						}
+					}
+				}
+			},
+			"404": {
+				"description": "找不到此问题"
+			}
+		}
+	}
+}

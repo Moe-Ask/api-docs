@@ -1,0 +1,48 @@
+{
+	"get": {
+		"tags": [
+			"question"
+		],
+		"summary": "获取问题列表",
+		"description": "获取的问题与页数和limit有关。</br>如果limit为10,page为2，则获取到第11-20个问题。</br>如果limit为12,page为13，则获取到第145-156个问题",
+		"operationId": "getQuestions",
+		"parameters": [
+			{
+				"name": "limit",
+				"in": "query",
+				"schema": {
+					"type": "integer",
+					"default": 10,
+					"minimum": 0,
+					"maximum": 50
+				},
+				"description": "一次请求返回的数量"
+			},
+			{
+				"name": "page",
+				"in": "path",
+				"required": true,
+				"schema": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"description": "页数"
+			}
+		],
+		"responses": {
+			"200": {
+				"description": "成功",
+				"content": {
+					"application/json": {
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "../models/question.json#/components/schemas/Question"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

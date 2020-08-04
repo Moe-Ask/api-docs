@@ -1,5 +1,5 @@
 {
-	"openapi": "3.0.1",
+	"openapi": "3.0.0",
 	"info": {
 		"title": "",
 		"version": ""
@@ -51,6 +51,13 @@
 					"avatar_url": {
 						"type": "string",
 						"description": "头像地址(path部分)"
+					},
+					"tel": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"username": {
+						"type": "string"
 					}
 				}
 			}

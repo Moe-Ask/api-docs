@@ -1,0 +1,44 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "",
+		"version": ""
+	},
+	"paths": {},
+	"components": {
+		"schemas": {
+			"Question": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"qid": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"uid": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"question": {
+						"type": "string"
+					},
+					"answer": {
+						"type": "string"
+					},
+					"status": {
+						"type": "integer"
+					},
+					"create_time": {
+						"type": "integer"
+					},
+					"answer_time": {
+						"type": "integer"
+					}
+				}
+			}
+		}
+	}
+}

@@ -26,13 +26,29 @@
                     "default": "v1"
                 }
             }
+        },
+        {
+            "url": "http://localhost:1551/{version}",
+            "description": "本地测试",
+            "variables": {
+                "version": {
+                    "enum": [
+                        "v1"
+                    ],
+                    "default": "v1"
+                }
+            }
         }
     ],
 
     "tags": [
         {
             "name": "user",
-            "description": "用户相关操作"
+            "description": "用户"
+        },
+        {
+            "name": "question",
+            "description": "问题"
         }
     ],
 
@@ -47,16 +63,27 @@
 
         "/user/login": {
             "$ref": "routes/user.login.json"
+        },
+
+        "/question/{id}": {
+            "$ref": "routes/question.id.json"
+        },
+        
+        "/questions/{page}": {
+            "$ref": "routes/questions.page.json"
         }
     },
 
     "components": {
         "schemas": {
             "Error": {
-                "$ref": "models/errro.json"
+                "$ref": "models/errro.json#/components/schemas/Error"
             },
             "User": {
                 "$ref": "models/user.json#/components/schemas/User"
+            },
+            "Question": {
+                "$ref": "models/question.json#/components/schemas/Question"
             }
         },
         "securitySchemes": {
