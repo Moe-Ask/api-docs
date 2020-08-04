@@ -1,0 +1,64 @@
+{
+	"post": {
+		"tags": [
+			"user"
+		],
+		"summary": "登录",
+		"description": "* 密码暂定使用argon2加密？",
+		"operationId": "userLogin",
+		"requestBody": {
+			"required": true,
+			"content": {
+				"application/json": {
+					"schema": {
+						"type": "object",
+						"properties": {
+							"email": {
+								"type": "string",
+								"format": "email"
+							},
+							"username": {
+								"type": "string"
+							},
+							"password": {
+								"type": "string",
+								"format": "password",
+								"description": "加密后的密码"
+							}
+						},
+						"required": [
+							[
+								"email",
+								"username"
+							],
+							"password"
+						]
+					}
+				}
+			}
+		},
+		"responses": {
+			"200": {
+				"description": "登录成功。返回token",
+				"content": {
+					"application/json": {
+						"schema": {
+							"type": "object",
+							"properties": {
+								"token": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"token"
+							]
+						}
+					}
+				}
+			},
+			"400": {
+				"description": "登录失败，没有这个用户或密码有误"
+			}
+		}
+	}
+}

@@ -1,0 +1,59 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "",
+		"version": ""
+	},
+	"paths": {},
+	"components": {
+		"schemas": {
+			"User": {
+				"type": "object",
+				"properties": {
+					"user_id": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"nickname": {
+						"type": "string",
+						"description": "昵称"
+					},
+					"email": {
+						"type": "string",
+						"format": "email"
+					},
+					"permissions": {
+						"type": "string",
+						"enum": [
+							"Admin",
+							"User"
+						],
+						"description": "`Admin` = 1 </br> `User` = 2"
+					},
+					"create_time": {
+						"type": "integer",
+						"format": "int32",
+						"description": "账号创建时间"
+					},
+					"last_time": {
+						"type": "integer",
+						"format": "int32",
+						"description": "用户上次登录时间"
+					},
+					"ip": {
+						"type": "string",
+						"description": "用户上次登录ip"
+					},
+					"description": {
+						"type": "string",
+						"description": "自我描述"
+					},
+					"avatar_url": {
+						"type": "string",
+						"description": "头像地址(path部分)"
+					}
+				}
+			}
+		}
+	}
+}

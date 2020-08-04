@@ -38,229 +38,25 @@
 
     "paths": {
         "/user": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "创建一个用户",
-                "description": "用户注册",
-                "operationId": "createUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "description": "加密后的密码"
-                                    },
-                                    "nickname": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "email",
-                                    "password"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "成功注册",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "邮箱已被占用"
-                    }
-                }
-            }
+            "$ref": "routes/user.json"
         },
         
         "/user/{user_id}": {
-            "get": {
-                "tags": ["user"],
-                "summary": "获取用户信息",
-                "description": "",
-                "operationId": "getUserById",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "description": "用户id（唯一标识"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "请求成功",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "身份验证不通过或没有身份验证",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "找不到用户"
-                    }
-                },
-                "security": [
-                    {
-                        "TokenAuth": [],
-                        "OAuth": [
-                            "read:user"
-                        ]
-                    }
-                ]
-            }
+            "$ref": "routes/user.user_id.json"
         },
 
         "/user/login": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "登录",
-                "description": "* 密码暂定使用argon2加密？",
-                "operationId": "userLogin",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "description": "加密后的密码"
-                                    }
-                                },
-                                "required": [
-                                    "email",
-                                    "password"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "登录成功。返回token",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "token"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "登录失败，没有这个用户或密码有误"
-                    }
-                }
-            }
+            "$ref": "routes/user.login.json"
         }
     },
 
     "components": {
         "schemas": {
             "Error": {
-                "type": "object",
-                "properties": {
-                    "error_msg": {
-                        "type": "string"
-                    }
-                }
+                "$ref": "models/errro.json"
             },
             "User": {
-                "type": "object",
-                "properties": {
-                    "user_id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "nickname": {
-                        "type": "string",
-                        "description": "昵称"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "permissions": {
-                        "type": "string",
-                        "enum": [
-                            "Admin",
-                            "User"
-                        ],
-                        "description": "`Admin` = 1 </br> `User` = 2"
-                    },
-                    "create_time": {
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "账号创建时间"
-                    },
-                    "last_time": {
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "用户上次登录时间"
-                    },
-                    "ip": {
-                        "type": "string",
-                        "description": "用户上次登录ip"
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "自我描述"
-                    },
-                    "avatar_url": {
-                        "type": "string",
-                        "description": "头像地址(path部分)"
-                    }
-                }
+                "$ref": "models/user.json#/components/schemas/User"
             }
         },
         "securitySchemes": {
